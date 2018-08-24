@@ -1,0 +1,60 @@
+# vim: ft=pfmain
+
+# ホスト名
+myhostname = example.com
+
+# 受信メールサイズ制限
+message_size_limit = 10485760
+
+queue_directory   = /var/spool/postfix
+command_directory = /usr/sbin
+data_directory    = /var/lib/postfix
+mail_owner        = postfix
+
+inet_interfaces = all
+inet_protocols  = ipv4
+
+mydomain = $myhostname
+myorigin = $myhostname
+mydestination = $myhostname, localhost
+mynetworks = '127.0.0.1/32'
+relay_domains =
+
+unknown_local_recipient_reject_code = 550
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+debug_peer_level = 2
+debugger_command =
+   PATH=/bin:/usr/bin:/usr/local/bin:/usr/X11R6/bin
+   ddd $daemon_directory/$process_name $process_id & sleep 5
+
+sendmail_path = /usr/sbin/sendmail.postfix
+newaliases_path = /usr/bin/newaliases.postfix
+mailq_path = /usr/bin/mailq.postfix
+setgid_group = postdrop
+html_directory = no
+manpage_directory = /usr/share/man
+sample_directory = /usr/share/doc/postfix-2.6.6/samples
+readme_directory = /usr/share/doc/postfix-2.6.6/README_FILES
+
+smtpd_banner = $myhostname ESMTP unknown
+
+# SMTP-AUTH
+smtpd_sasl_auth_enable          = yes
+smtpd_sasl_authenticated_header = yes
+broken_sasl_auth_clients        = yes
+smtpd_sasl_local_domain         = $myhostname
+smtpd_recipient_restrictions    =
+     permit_mynetworks
+     permit_sasl_authenticated
+     reject_unauth_destination
+smtpd_sasl_type = cyrus
+smtpd_sasl_path = smtpd
+
+# TLS
+smtpd_use_tls = yes
+smtpd_tls_loglevel = 1
+smtpd_tls_cert_file = /certs/fullchain.pem
+smtpd_tls_key_file  = /certs/privkey.pem
+smtp_tls_security_level = may
+

@@ -1,0 +1,22 @@
+# vim:ft=yaml
+
+version: '3'
+
+networks:
+    default:
+
+services:
+
+  mail:
+     build: .
+     ports:
+         - '2525:25'
+
+     volumes:
+         - ./main.cf:/etc/postfix/main.cf:ro
+         - ./passwords:/passwords:ro
+         - ./certs:/certs
+         - ./log/syslog:/var/log/syslog
+
+     command: 'server'
+
